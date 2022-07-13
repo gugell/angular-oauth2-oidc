@@ -1,38 +1,56 @@
 import { DOCUMENT } from '@angular/common';
 import {
-  HttpClient, HttpErrorResponse, HttpHeaders,
-  HttpParams
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
 } from '@angular/common/http';
 import { Inject, Injectable, NgZone, OnDestroy, Optional } from '@angular/core';
 import {
-  combineLatest, from, Observable, of,
-  race, Subject,
-  Subscription, throwError
+  combineLatest,
+  from,
+  Observable,
+  of,
+  race,
+  Subject,
+  Subscription,
+  throwError,
 } from 'rxjs';
 import {
-  catchError, debounceTime, delay, filter, first, map,
-  switchMap, tap
+  catchError,
+  debounceTime,
+  delay,
+  filter,
+  first,
+  map,
+  switchMap,
+  tap,
 } from 'rxjs/operators';
 import { AuthConfig } from './auth.config';
 import { b64DecodeUnicode, base64UrlEncode } from './base64-helper';
 import { DateTimeProvider } from './date-time-provider';
 import { WebHttpUrlEncodingCodec } from './encoder';
 import {
-  OAuthErrorEvent, OAuthEvent,
-  OAuthInfoEvent, OAuthSuccessEvent,
-  OAuthTokenEvent
+  OAuthErrorEvent,
+  OAuthEvent,
+  OAuthInfoEvent,
+  OAuthSuccessEvent,
+  OAuthTokenEvent,
 } from './events';
 import { HashHandler } from './token-validation/hash-handler';
 import {
   ValidationHandler,
-  ValidationParams
+  ValidationParams,
 } from './token-validation/validation-handler';
 import {
-  LoginOptions, OAuthLogger,
-  OAuthStorage, OidcDiscoveryDoc, ParsedIdToken, TokenResponse
+  LoginOptions,
+  OAuthLogger,
+  OAuthStorage,
+  OidcDiscoveryDoc,
+  ParsedIdToken,
+  TokenResponse,
 } from './types';
 import { UrlHelperService } from './url-helper.service';
-
 
 /**
  * Service for logging in and logging out with
@@ -887,7 +905,9 @@ export class OAuthService extends AuthConfig implements OnDestroy {
                 resolve(tokenResponse);
               });
             }
-            this.eventsSubject.next(new OAuthTokenEvent('token_received', tokenResponse));
+            this.eventsSubject.next(
+              new OAuthTokenEvent('token_received', tokenResponse)
+            );
             resolve(tokenResponse);
           },
           (err) => {
@@ -912,7 +932,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
       'tokenEndpoint'
     );
     return new Promise(async (resolve, reject) => {
-      let refresh_token = await this._storage.getItem('refresh_token')
+      let refresh_token = await this._storage.getItem('refresh_token');
       let params = new HttpParams({ encoder: new WebHttpUrlEncodingCodec() })
         .set('grant_type', 'refresh_token')
         .set('scope', this.scope)
@@ -974,7 +994,9 @@ export class OAuthService extends AuthConfig implements OnDestroy {
               this.extractRecognizedCustomParameters(tokenResponse)
             );
 
-            this.eventsSubject.next(new OAuthTokenEvent('token_received', tokenResponse));
+            this.eventsSubject.next(
+              new OAuthTokenEvent('token_received', tokenResponse)
+            );
             this.eventsSubject.next(new OAuthSuccessEvent('token_refreshed'));
             resolve(tokenResponse);
           },
@@ -1633,7 +1655,9 @@ export class OAuthService extends AuthConfig implements OnDestroy {
     this.inImplicitFlow = false;
   }
 
-  protected async callOnTokenReceivedIfExists(options: LoginOptions): Promise<void> {
+  protected async callOnTokenReceivedIfExists(
+    options: LoginOptions
+  ): Promise<void> {
     const that = this;
     if (options.onTokenReceived) {
       const tokenParams = {
@@ -1926,7 +1950,9 @@ export class OAuthService extends AuthConfig implements OnDestroy {
                   reject(reason);
                 });
             } else {
-              this.eventsSubject.next(new OAuthTokenEvent('token_received', tokenResponse));
+              this.eventsSubject.next(
+                new OAuthTokenEvent('token_received', tokenResponse)
+              );
               this.eventsSubject.next(new OAuthSuccessEvent('token_refreshed'));
 
               resolve(tokenResponse);
@@ -2340,7 +2366,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
   /**
    * Returns the current id_token.
    */
-  public async getIdToken(): Promise<string>  {
+  public async getIdToken(): Promise<string> {
     return this._storage ? await this._storage.getItem('id_token') : null;
   }
 
@@ -2367,7 +2393,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
    * as milliseconds since 1970.
    */
   public async getAccessTokenExpiration(): Promise<number> {
-    if (!await this._storage.getItem('expires_at')) {
+    if (!(await this._storage.getItem('expires_at'))) {
       return null;
     }
     return parseInt(await this._storage.getItem('expires_at'), 10);
@@ -2386,7 +2412,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
    * as milliseconds since 1970.
    */
   public async getIdTokenExpiration(): Promise<number> {
-    if (!await this._storage.getItem('id_token_expires_at')) {
+    if (!(await this._storage.getItem('id_token_expires_at'))) {
       return null;
     }
 
@@ -2436,7 +2462,9 @@ export class OAuthService extends AuthConfig implements OnDestroy {
   /**
    * Retrieve a saved custom property of the TokenReponse object. Only if predefined in authconfig.
    */
-  public async getCustomTokenResponseProperty(requestedProperty: string): Promise<any> {
+  public async getCustomTokenResponseProperty(
+    requestedProperty: string
+  ): Promise<any> {
     return this._storage &&
       this.config.customTokenParameters &&
       this.config.customTokenParameters.indexOf(requestedProperty) >= 0 &&
@@ -2460,11 +2488,14 @@ export class OAuthService extends AuthConfig implements OnDestroy {
    * @param noRedirectToLogoutUrl
    * @param state
    */
-  public logOut(): Promise<void> ;
-  public logOut(customParameters: boolean | object): Promise<void> ;
-  public logOut(noRedirectToLogoutUrl: boolean): Promise<void> ;
-  public logOut(noRedirectToLogoutUrl: boolean, state: string): Promise<void> ;
-  public async logOut(customParameters: boolean | object = {}, state = ''): Promise<void> {
+  public logOut(): Promise<void>;
+  public logOut(customParameters: boolean | object): Promise<void>;
+  public logOut(noRedirectToLogoutUrl: boolean): Promise<void>;
+  public logOut(noRedirectToLogoutUrl: boolean, state: string): Promise<void>;
+  public async logOut(
+    customParameters: boolean | object = {},
+    state = ''
+  ): Promise<void> {
     let noRedirectToLogoutUrl = false;
     if (typeof customParameters === 'boolean') {
       noRedirectToLogoutUrl = customParameters;
@@ -2492,8 +2523,8 @@ export class OAuthService extends AuthConfig implements OnDestroy {
     await this._storage.removeItem('granted_scopes');
     await this._storage.removeItem('session_state');
     if (this.config.customTokenParameters) {
-      this.config.customTokenParameters.forEach(async (customParam) =>
-      await this._storage.removeItem(customParam)
+      this.config.customTokenParameters.forEach(
+        async (customParam) => await this._storage.removeItem(customParam)
       );
     }
     this.silentRefreshSubject = null;
@@ -2759,7 +2790,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
   ): Promise<any> {
     let revokeEndpoint = this.revocationEndpoint;
     let accessToken = await this.getAccessToken();
-    let refreshToken =  await this.getRefreshToken();
+    let refreshToken = await this.getRefreshToken();
 
     if (!accessToken) {
       return;

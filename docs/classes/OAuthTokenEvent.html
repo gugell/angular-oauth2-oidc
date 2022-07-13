@@ -43,7 +43,7 @@
 
 <ol class="breadcrumb">
   <li>Classes</li>
-  <li >OAuthErrorEvent</li>
+  <li >OAuthTokenEvent</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -70,7 +70,7 @@
                 <h3>Extends</h3>
             </p>
             <p class="comment">
-                        <code><a href="../classes/OAuthEvent.html" target="_self" >OAuthEvent</a></code>
+                        <code><a href="../classes/OAuthInfoEvent.html" target="_self" >OAuthInfoEvent</a></code>
             </p>
 
 
@@ -82,12 +82,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(type: <a href="../undefineds/EventType.html" target="_self">EventType</a>, reason: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank">object</a>, params: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank">object</a>)</code>
+<code>constructor(type: <a href="../undefineds/EventType.html" target="_self">EventType</a>, tokenResponse?: <a href="../interfaces/TokenResponse.html" target="_self">TokenResponse</a>, info: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">projects/lib/src/events.ts:46</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">projects/lib/src/events.ts:56</a></div>
                             </td>
                         </tr>
 
@@ -117,22 +117,22 @@
                                                     
                                                 </tr>
                                                 <tr>
-                                                        <td>reason</td>
+                                                        <td>tokenResponse</td>
                                                   
                                                         <td>
-                                                                        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+                                                                        <code><a href="../interfaces/TokenResponse.html" target="_self" >TokenResponse</a></code>
                                                         </td>
                                                   
                                                     <td>
-                                                            No
+                                                            Yes
                                                     </td>
                                                     
                                                 </tr>
                                                 <tr>
-                                                        <td>params</td>
+                                                        <td>info</td>
                                                   
                                                         <td>
-                                                                        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+                                                                        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -252,7 +252,7 @@ export class OAuthTokenEvent extends OAuthInfoEvent {
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
-            var COMPODOC_CURRENT_PAGE_URL = 'OAuthErrorEvent.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'OAuthTokenEvent.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

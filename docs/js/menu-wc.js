@@ -225,6 +225,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="classes/OAuthSuccessEvent.html" data-type="entity-link" >OAuthSuccessEvent</a>
                             </li>
                             <li class="link">
+                                <a href="classes/OAuthTokenEvent.html" data-type="entity-link" >OAuthTokenEvent</a>
+                            </li>
+                            <li class="link">
                                 <a href="classes/ReceivedTokens.html" data-type="entity-link" >ReceivedTokens</a>
                             </li>
                             <li class="link">

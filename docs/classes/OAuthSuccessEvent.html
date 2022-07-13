@@ -87,7 +87,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">projects/lib/src/events.ts:32</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">projects/lib/src/events.ts:34</a></div>
                             </td>
                         </tr>
 
@@ -148,7 +148,9 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">export type EventType &#x3D;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { TokenResponse } from &#x27;./types&#x27;;
+
+export type EventType &#x3D;
   | &#x27;discovery_document_loaded&#x27;
   | &#x27;jwks_load_error&#x27;
   | &#x27;invalid_nonce_in_state&#x27;
@@ -198,6 +200,16 @@ export class OAuthErrorEvent extends OAuthEvent {
     readonly params: object &#x3D; null
   ) {
     super(type);
+  }
+}
+
+export class OAuthTokenEvent extends OAuthInfoEvent {
+  constructor(
+    type: EventType,
+    readonly tokenResponse?: TokenResponse,
+    readonly info: any &#x3D; null
+  ) {
+    super(type, info);
   }
 }
 </code></pre>

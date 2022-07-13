@@ -1,4 +1,4 @@
-import { TokenResponse } from "./types";
+import { TokenResponse } from './types';
 
 export type EventType =
   | 'discovery_document_loaded'
@@ -57,7 +57,7 @@ export class OAuthTokenEvent extends OAuthInfoEvent {
   constructor(
     type: EventType,
     readonly tokenResponse?: TokenResponse,
-    readonly info: any = null,
+    readonly info: any = null
   ) {
     super(type, info);
   }
