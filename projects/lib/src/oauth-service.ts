@@ -1,57 +1,38 @@
-import { Injectable, NgZone, Optional, OnDestroy, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import {
-  HttpClient,
-  HttpHeaders,
-  HttpParams,
-  HttpErrorResponse,
+  HttpClient, HttpErrorResponse, HttpHeaders,
+  HttpParams
 } from '@angular/common/http';
+import { Inject, Injectable, NgZone, OnDestroy, Optional } from '@angular/core';
 import {
-  Observable,
-  Subject,
-  Subscription,
-  of,
-  race,
-  from,
-  combineLatest,
-  throwError,
+  combineLatest, from, Observable, of,
+  race, Subject,
+  Subscription, throwError
 } from 'rxjs';
 import {
-  filter,
-  delay,
-  first,
-  tap,
-  map,
-  switchMap,
-  debounceTime,
-  catchError,
+  catchError, debounceTime, delay, filter, first, map,
+  switchMap, tap
 } from 'rxjs/operators';
-import { DOCUMENT } from '@angular/common';
+import { AuthConfig } from './auth.config';
+import { b64DecodeUnicode, base64UrlEncode } from './base64-helper';
 import { DateTimeProvider } from './date-time-provider';
-
+import { WebHttpUrlEncodingCodec } from './encoder';
+import {
+  OAuthErrorEvent, OAuthEvent,
+  OAuthInfoEvent, OAuthSuccessEvent,
+  OAuthTokenEvent
+} from './events';
+import { HashHandler } from './token-validation/hash-handler';
 import {
   ValidationHandler,
-  ValidationParams,
+  ValidationParams
 } from './token-validation/validation-handler';
-import { UrlHelperService } from './url-helper.service';
 import {
-  OAuthEvent,
-  OAuthInfoEvent,
-  OAuthErrorEvent,
-  OAuthSuccessEvent,
-} from './events';
-import {
-  OAuthLogger,
-  OAuthStorage,
-  LoginOptions,
-  ParsedIdToken,
-  OidcDiscoveryDoc,
-  TokenResponse,
-  UserInfo,
+  LoginOptions, OAuthLogger,
+  OAuthStorage, OidcDiscoveryDoc, ParsedIdToken, TokenResponse
 } from './types';
-import { b64DecodeUnicode, base64UrlEncode } from './base64-helper';
-import { AuthConfig } from './auth.config';
-import { WebHttpUrlEncodingCodec } from './encoder';
-import { HashHandler } from './token-validation/hash-handler';
+import { UrlHelperService } from './url-helper.service';
+
 
 /**
  * Service for logging in and logging out with
@@ -906,7 +887,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
                 resolve(tokenResponse);
               });
             }
-            this.eventsSubject.next(new OAuthSuccessEvent('token_received'));
+            this.eventsSubject.next(new OAuthTokenEvent('token_received', tokenResponse));
             resolve(tokenResponse);
           },
           (err) => {
@@ -993,7 +974,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
               this.extractRecognizedCustomParameters(tokenResponse)
             );
 
-            this.eventsSubject.next(new OAuthSuccessEvent('token_received'));
+            this.eventsSubject.next(new OAuthTokenEvent('token_received', tokenResponse));
             this.eventsSubject.next(new OAuthSuccessEvent('token_refreshed'));
             resolve(tokenResponse);
           },
@@ -1665,14 +1646,14 @@ export class OAuthService extends AuthConfig implements OnDestroy {
     }
   }
 
-  protected storeAccessTokenResponse(
+  protected async storeAccessTokenResponse(
     accessToken: string,
     refreshToken: string,
     expiresIn: number,
     grantedScopes: String,
     customParameters?: Map<string, string>
-  ): void {
-    this._storage.setItem('access_token', accessToken);
+  ): Promise<void> {
+    await this._storage.setItem('access_token', accessToken);
     if (grantedScopes && !Array.isArray(grantedScopes)) {
       this._storage.setItem(
         'granted_scopes',
@@ -1927,7 +1908,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
                   this.storeIdToken(result);
 
                   this.eventsSubject.next(
-                    new OAuthSuccessEvent('token_received')
+                    new OAuthTokenEvent('token_received', tokenResponse)
                   );
                   this.eventsSubject.next(
                     new OAuthSuccessEvent('token_refreshed')
@@ -1945,7 +1926,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
                   reject(reason);
                 });
             } else {
-              this.eventsSubject.next(new OAuthSuccessEvent('token_received'));
+              this.eventsSubject.next(new OAuthTokenEvent('token_received', tokenResponse));
               this.eventsSubject.next(new OAuthSuccessEvent('token_refreshed'));
 
               resolve(tokenResponse);
@@ -2074,7 +2055,7 @@ export class OAuthService extends AuthConfig implements OnDestroy {
         if (this.clearHashAfterLogin && !options.preventClearHashAfterLogin) {
           this.clearLocationHash();
         }
-        this.eventsSubject.next(new OAuthSuccessEvent('token_received'));
+        this.eventsSubject.next(new OAuthTokenEvent('token_received'));
         this.callOnTokenReceivedIfExists(options);
         this.inImplicitFlow = false;
         return true;

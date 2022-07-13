@@ -1,3 +1,5 @@
+import { TokenResponse } from "./types";
+
 export type EventType =
   | 'discovery_document_loaded'
   | 'jwks_load_error'
@@ -48,5 +50,15 @@ export class OAuthErrorEvent extends OAuthEvent {
     readonly params: object = null
   ) {
     super(type);
+  }
+}
+
+export class OAuthTokenEvent extends OAuthInfoEvent {
+  constructor(
+    type: EventType,
+    readonly tokenResponse?: TokenResponse,
+    readonly info: any = null,
+  ) {
+    super(type, info);
   }
 }

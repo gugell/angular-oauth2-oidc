@@ -95,7 +95,7 @@ export abstract class OAuthLogger {
  * but you can also create your own implementations.
  */
 export abstract class OAuthStorage {
-  abstract getItem(key: string): string | null | Promise<string>;
+  abstract getItem(key: string): string | null | Promise<string | null>;
   abstract removeItem(key: string): void | Promise<void>;
   abstract setItem(key: string, data: string): void | Promise<void>;
 }
